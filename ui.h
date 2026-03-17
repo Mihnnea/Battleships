@@ -1,3 +1,4 @@
 #pragma once
+#include "player.h"
 
-void printMap();
+void printMap(Player_t *);

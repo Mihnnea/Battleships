@@ -4,11 +4,11 @@
 #include "player.h"
 
 int main() {
-    printMap();
-    Player_t *player1 = initPLayer("Player 1");
-    Player_t *player2 = initPLayer("Player 2");
+    Player_t player1, player2;
+    initPLayer(&player1, "Player 1");
+    initPLayer(&player2, "Player 2");
 
-    destroyPlayer(player1);
-    destroyPlayer(player2);
+
+    printMap(&player1);
     return 0;
 }
