@@ -1,1 +1,3 @@
-void printComplex(int, int);
+#pragma once
+
+void printMap();
