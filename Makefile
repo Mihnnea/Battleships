@@ -5,14 +5,14 @@ TARGET = p
 
 all: $(TARGET)
 
-$(TARGET): main.o cplx.o
-	$(CC) $(CFLAGS) -o $(TARGET) main.o cplx.o
+$(TARGET): main.o ui.o
+	$(CC) $(CFLAGS) -o $(TARGET) main.o ui.o
 
-main.o: main.c cplx.h
+main.o: main.c ui.h
 	$(CC) $(CFLAGS) -c main.c
 
-cplx.o: cplx.c cplx.h
-	$(CC) $(CFLAGS) -c cplx.c
+ui.o: ui.c ui.h
+	$(CC) $(CFLAGS) -c ui.c
 
 clean:
 	rm -f *.o $(TARGET)
