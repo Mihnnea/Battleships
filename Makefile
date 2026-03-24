@@ -1,12 +1,13 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
+LIBS = -lraylib -lGL -lm -lpthread -ldl -lX11
 
 TARGET = battleships
 
 all: $(TARGET)
 
 $(TARGET): main.o ui.o player.o
-	$(CC) $(CFLAGS) -o $(TARGET) main.o ui.o player.o
+	$(CC) $(CFLAGS) -o $(TARGET) main.o ui.o player.o $(LIBS)
 
 main.o: main.c ui.h player.h
 	$(CC) $(CFLAGS) -c main.c

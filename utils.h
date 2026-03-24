@@ -1,1 +1,1 @@
-#define MAP_SIZE 12
+#define MAP_SIZE 10

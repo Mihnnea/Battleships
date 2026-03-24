@@ -1,4 +1,8 @@
 #pragma once
 #include "player.h"
 
-void printMap(Player_t *);
+void initWindow(const char *title);
+int windowShouldClose(void);
+void closeWindow(void);
+
+void drawFrame(Player_t *player);
