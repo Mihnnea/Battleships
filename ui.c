@@ -5,6 +5,7 @@
 #include "ui.h"
 #include "utils.h"
 #include "player.h"
+#include "game.h"
 
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -27,12 +28,12 @@ void initWindow(const char *title) {
     SetTargetFPS(60);
 }
 
-static void getBoardDimensions(int *boardWidth, int *boardHeight) {
+void getBoardDimensions(int *boardWidth, int *boardHeight) {
     *boardWidth = MAP_SIZE * CELL_SIZE + (MAP_SIZE - 1) * CELL_GAP;
     *boardHeight = MAP_SIZE * CELL_SIZE + (MAP_SIZE - 1) * CELL_GAP + PLAYER_NAME_FONT_SIZE + NAME_PADDING;
 }
 
-static void getGameContainerPosition(int *startX, int *startY) {
+void getGameContainerPosition(int *startX, int *startY) {
     int boardWidth, boardHeight;
     getBoardDimensions(&boardWidth, &boardHeight);
     *startX = (WINDOW_WIDTH - boardWidth) / 2;
@@ -47,13 +48,7 @@ void closeWindow() {
     CloseWindow();
 }
 
-void drawFrame(Player_t *player) {
-    BeginDrawing();
-    ClearBackground(COLOR_BACKGROUND);
-    
-    int containerX, containerY;
-    getGameContainerPosition(&containerX, &containerY);
-    
+void drawBoard(Player_t *player, int containerX, int containerY, int reveal) {
     DrawText(player->name, containerX, containerY, PLAYER_NAME_FONT_SIZE, COLOR_TEXT);
     
     int boardStartX = containerX;
@@ -65,9 +60,11 @@ void drawFrame(Player_t *player) {
             int y = boardStartY + i * (CELL_SIZE + CELL_GAP);
             
             Color cellColor = COLOR_WATER;
-            if(player->battleships[i][j] == ship)
+            
+            if(reveal && player->battleships[i][j] == ship)
                 cellColor = COLOR_SHIP;
-            else if(player->battleships[i][j] == d_ship)
+            
+            if(player->battleships[i][j] == d_ship)
                 cellColor = COLOR_DESTROYED_SHIP;
             else if(player->battleships[i][j] == d_water)
                 cellColor = COLOR_DESTROYED_WATER;
@@ -75,6 +72,47 @@ void drawFrame(Player_t *player) {
             DrawRectangle(x, y, CELL_SIZE, CELL_SIZE, cellColor);
             DrawRectangleLines(x, y, CELL_SIZE, CELL_SIZE, COLOR_GRID);
         }
+    }
+}
+
+void drawFrame(Game_t *game) {
+    BeginDrawing();
+    ClearBackground(COLOR_BACKGROUND);
+    
+    int containerX, containerY;
+    getGameContainerPosition(&containerX, &containerY);
+    
+    switch (game->state) {
+        case GAME_STATE_PLAYER1_SETUP:
+            DrawText("Player 1 Setup - Place your ships", 50, 50, 40, COLOR_TEXT);
+            drawBoard(&game->player1, containerX, containerY, 1);
+            break;
+        
+        case GAME_STATE_PLAYER2_SETUP:
+            DrawText("Player 2 Setup - Place your ships", 50, 50, 40, COLOR_TEXT);
+            drawBoard(&game->player2, containerX, containerY, 1);
+            break;
+        
+        case GAME_STATE_PLAYING:
+            if(game->current_player == 1) {
+                DrawText("Player 1's Turn", 50, 50, 40, COLOR_TEXT);
+                DrawText("Your Board:", 50, 120, 20, COLOR_TEXT);
+                drawBoard(&game->player1, 50, 150, 1);
+                DrawText("Enemy Board:", 650, 120, 20, COLOR_TEXT);
+                drawBoard(&game->player2, 650, 150, 0);
+            } else {
+                DrawText("Player 2's Turn", 50, 50, 40, COLOR_TEXT);
+                DrawText("Your Board:", 50, 120, 20, COLOR_TEXT);
+                drawBoard(&game->player2, 50, 150, 1);
+                DrawText("Enemy Board:", 650, 120, 20, COLOR_TEXT);
+                drawBoard(&game->player1, 650, 150, 0);
+            }
+            break;
+        
+        case GAME_STATE_GAME_OVER:
+            DrawText("Game Over!", 50, 50, 40, COLOR_TEXT);
+            DrawText("Press R to restart or ESC to exit", 50, 150, 30, COLOR_TEXT);
+            break;
     }
     
     EndDrawing();

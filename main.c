@@ -2,16 +2,17 @@
 
 #include "ui.h"
 #include "player.h"
+#include "game.h"
 
 int main() {
-    Player_t player1, player2;
-    initPLayer(&player1, "Player 1");
-    initPLayer(&player2, "Player 2");
-    
+    Game_t game;
+    initGame(&game);
+
     initWindow("Battleships");
     
     while (!windowShouldClose()) {
-        drawFrame(&player1);
+        gameUpdate(&game);
+        drawFrame(&game);
     }
     
     closeWindow();

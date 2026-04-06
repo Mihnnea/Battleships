@@ -4,19 +4,16 @@ LIBS = -lraylib -lGL -lm -lpthread -ldl -lX11
 
 TARGET = battleships
 
+SOURCES = $(wildcard *.c)
+OBJECTS = $(SOURCES:.c=.o)
+
 all: $(TARGET)
 
-$(TARGET): main.o ui.o player.o
-	$(CC) $(CFLAGS) -o $(TARGET) main.o ui.o player.o $(LIBS)
+$(TARGET): $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
 
-main.o: main.c ui.h player.h
-	$(CC) $(CFLAGS) -c main.c
-
-ui.o: ui.c ui.h
-	$(CC) $(CFLAGS) -c ui.c
-
-player.o: player.c player.h
-	$(CC) $(CFLAGS) -c player.c
+%.o: %.c $(if $(wildcard %.h),%.h)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f *.o $(TARGET)

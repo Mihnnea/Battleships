@@ -13,6 +13,7 @@ typedef enum {
 typedef struct Player {
     char name[PLAYER_NAME_SIZE + 1];
     cell_types_t battleships[MAP_SIZE][MAP_SIZE];
+    cell_types_t attacked_battleships[MAP_SIZE][MAP_SIZE];
 } Player_t;
 
-void initPLayer(Player_t *, const char *);
+void initPlayer(Player_t *, const char *);
