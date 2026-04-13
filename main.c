@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <raylib.h>
 
 #include "ui.h"
-#include "player.h"
 #include "game.h"
 
 int main() {

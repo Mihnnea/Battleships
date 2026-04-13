@@ -15,6 +15,9 @@ typedef struct {
 
     GameState_t state;
     int current_player;
+    
+    int selected_ship;
+    int setup_complete[2];
 } Game_t;
 
 void initGame(Game_t*);
@@ -22,3 +25,5 @@ void gameUpdate(Game_t*);
 void gameSetup(Game_t*);
 void gamePlaying(Game_t*);
 void gameOver(Game_t*);
+
+void handleInput(Game_t*);
