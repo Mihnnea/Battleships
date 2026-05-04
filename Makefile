@@ -1,4 +1,3 @@
-# Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -I./include -I/usr/include -fPIC
 LDFLAGS = -L/usr/lib -lraylib -lm -lpthread -ldl -lrt -lX11
