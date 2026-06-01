@@ -6,6 +6,8 @@ void board_init(Board *board) {
         for(int c = 0; c < BOARD_SIZE; c++) {
             board->grid[r][c] = CELL_EMPTY;
             board->ship_id[r][c] = -1;
+            board->decoy_grid[r][c] = 0;
+            board->shield_grid[r][c] = 0;
         }
     }
     board->ship_count = 0;
@@ -47,9 +49,22 @@ int board_attack(Board *board, int row, int col) {
     if(row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE)
         return -1;
 
-    char cell = board->grid[row][col];
+    CellType cell = board->grid[row][col];
     if(cell == CELL_HIT || cell == CELL_MISS)
         return -1;
+
+    // 1. Check Shield
+    if(cell == CELL_SHIP && board->shield_grid[row][col] == 1) {
+        board->shield_grid[row][col] = 0; // Shield absorbed the hit and is destroyed
+        return 2; // Returns 2 (Shield Blocked)
+    }
+
+    // 2. Check Decoy
+    if(board->decoy_grid[row][col] == 1) {
+        board->decoy_grid[row][col] = 0;
+        board->grid[row][col] = CELL_MISS; // Marks as a miss on own grid
+        return 3; // Returns 3 (Decoy Tripped, attacker will view as Hit)
+    }
 
     if(cell == CELL_SHIP) {
         board->grid[row][col] = CELL_HIT;
@@ -69,4 +84,24 @@ int board_all_sunk(const Board *board) {
         if(!ship_is_sunk(&board->ships[i])) return 0;
     }
     return (board->ship_count > 0);
+}
+
+int board_scan_row(const Board *board, int row) {
+    if(row < 0 || row >= BOARD_SIZE) return 0;
+    for(int c = 0; c < BOARD_SIZE; c++) {
+        if(board->grid[row][c] == CELL_SHIP) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int board_scan_col(const Board *board, int col) {
+    if(col < 0 || col >= BOARD_SIZE) return 0;
+    for(int r = 0; r < BOARD_SIZE; r++) {
+        if(board->grid[r][col] == CELL_SHIP) {
+            return 1;
+        }
+    }
+    return 0;
 }

@@ -7,6 +7,8 @@ typedef enum {
     STATE_P1_PLACE,
     STATE_TRANSITION,
     STATE_P2_PLACE,
+    STATE_P1_SHOP,
+    STATE_P2_SHOP,
     STATE_P1_ATTACK,
     STATE_P2_ATTACK,
     STATE_GAME_OVER
@@ -29,6 +31,12 @@ typedef struct {
 
     const char *ship_names[MAX_SHIPS];
     int ship_sizes[MAX_SHIPS];
+
+    int shop_selected_powerup; // 0 = None, 1 = Decoy (2 pts), 2 = Sonar Ping (3 pts), 3 = Naval Shield (4 pts), 4 = Carpet Bomb (6 pts)
+    int active_powerup;        // 0 = None, 1 = Sonar Ping, 2 = Carpet Bomb
+    int sonar_scan_mode;
+    char sonar_message[128];
+    float sonar_message_timer;
 } Game;
 
 void game_init(Game *game);
